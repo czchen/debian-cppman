@@ -1,0 +1,2 @@
+version=3
+https://pypi.python.org/packages/source/c/cppman/cppman-(.*)\.(?:zip|tgz|tbz|txz|(?:tar\.(?:gz|bz2|xz)))

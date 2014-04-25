@@ -1,0 +1,19 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+%:
+	dh $@ --with python2
+
+override_dh_fixperms:
+	dh_fixperms
+	# The executable bit is cleaned during build process, so we need set
+	# them again.
+	find debian/cppman -name *.sh -print0 | xargs --null chmod a+x
+
+override_dh_auto_install:
+	dh_auto_install
+	# Fix extra-license-file
+	-rm -f debian/cppman/usr/share/doc/cppman/COPYING
