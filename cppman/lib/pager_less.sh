@@ -2,14 +2,14 @@
 # 
 # pager_less.sh
 #
-# Copyright (C) 2010 - 2013  Wei-Ning Huang (AZ) <aitjcize@gmail.com>
+# Copyright (C) 2010 - 2014  Wei-Ning Huang (AZ) <aitjcize@gmail.com>
 # All Rights reserved.
 #
 # This file is part of cppman.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -26,5 +26,6 @@
 # settings
 #
 
-escape=$(echo -e '\033')
-cat "$1" | gunzip | groff -t -c -m man -Tascii -rLL=$2n -rLT=$2n 2> /dev/null | sed "s/$escape\[[^m]*m//g" | less
+[ -n "`echo $LC_ALL | sed 's/-//g' | grep -i utf8`" ] && dev=utf8 || dev=ascii
+
+gunzip -c "$1" | groff -t -c -m man -T$dev -rLL=$2n -rLT=$2n 2> /dev/null | less

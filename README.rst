@@ -1,29 +1,36 @@
-.. image:: https://travis-ci.org/aitjcize/cppman.png?branch=master
+.. image:: http://img.shields.io/travis/aitjcize/cppman.svg
    :target: https://travis-ci.org/aitjcize/cppman
-.. image:: https://pypip.in/v/cppman/badge.png
+.. image:: http://img.shields.io/pypi/v/cppman.svg
    :target: https://pypi.python.org/pypi/cppman
-.. image:: https://pypip.in/d/cppman/badge.png
-   :target: https://crate.io/packages/cppman/
+.. image:: http://img.shields.io/pypi/dm/cppman.svg
+   :target: https://crate.io/packages/cppman
 
 cppman
 ======
-Manual page formatter that generates C++ manual pages from `cplusplus.com <http://cplusplus.com/>`_.
+C++ 98/11/14 manual pages for Linux, with source from `cplusplus.com <http://cplusplus.com/>`_ and `cppreference.com <http://cppreference.com/>`_.
 
 .. image:: https://raw.github.com/aitjcize/cppman/master/wiki/screenshot.png
 
 Features
 --------
+* Supports two backends (switch it with ``cppman -s``):
+
+  + `cplusplus.com <http://cplusplus.com/>`_
+  + `cppreference.com <http://cppreference.com/>`_
+
 * Syntax highlighting support for sections and example source code.
-* Usage/Interface simliar to the 'man' command
-* Hyperlink between manpages
+* Usage/Interface similar to the 'man' command
+* Hyperlink between manpages (only available when pager=vim)
 
   + Press ``Ctrl-]`` when cursor is on keyword to go forward and ``Ctrl-T`` to go backward.
-  + You can also double-click on keyword to go forward.
+  + You can also double-click on keyword to go forward and right-click to go backward.
 
 * Frequently update to support `cplusplus.com <http://cplusplus.com/>`_.
 
 Demo
 ----
+Using vim as pager
+
 .. image:: https://raw.github.com/aitjcize/cppman/master/wiki/demo.gif
 
 Installation
@@ -46,11 +53,24 @@ or install the git version
 
     $ yaourt -S cppman-git
 
-3. Ubuntu/Debian PPA are no longer maintained. If you are interested in maintaining it, feel free to contact me.
+3. Ubuntu/Debian PPA
+
+.. code-block:: bash
+
+    $ sudo add-apt-repository ppa:cppman/cppman-daily
+    $ sudo apt-get update
+    $ sudo apt-get install cppman
+
+Thanks `czchen <https://github.com/czchen>`_ for maintaining the package.
+
+FAQ
+---
+* Q: Can I use the system ``man`` command instead of ``cppman``?
+* A: Yes, just execute ``cppman -m true`` and all cached man pages are exposed to the system ``man`` command.  Note: You may want to download all available man pages with ``cppman -c``.
 
 Bugs
 ----
-* Please report bugs / mis-formatted pages to the github issure tracker.
+* Please report bugs / mis-formatted pages to the github issue tracker.
 
 Contributing
 ------------
@@ -63,6 +83,3 @@ Contributing
 Notes
 -----
 * manpages-cpp is renamed to cppman since September 19, 2012
-
-.. image:: https://cruel-carlota.pagodabox.com/d590c9d5f4c2a6dcbaea67a1286d7302
-   :target: http://githalytics.com/aitjcize/cppman

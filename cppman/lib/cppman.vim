@@ -5,7 +5,7 @@
 "
 " This program is free software; you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
-" the Free Software Foundation; either version 2 of the License, or
+" the Free Software Foundation; either version 3 of the License, or
 " (at your option) any later version.
 "
 " This program is distributed in the hope that it will be useful,
@@ -34,7 +34,7 @@
 " For version 6.x: Quit when a syntax file was already loaded
 
 set nonu
-set iskeyword+=:,=,~,[,],>,*
+set iskeyword+=:,=,~,[,],*,!,<,>
 set keywordprg=cppman
 map q :q!<CR>
 
@@ -48,7 +48,7 @@ syntax on
 syntax case ignore
 syntax match  manReference       "[a-z_:+-\*][a-z_:+-~!\*<>]\+([1-9][a-z]\=)"
 syntax match  manTitle           "^\w.\+([0-9]\+[a-z]\=).*"
-syntax match  manSectionHeading  "^[a-z][a-z_ \-]*[a-z]$"
+syntax match  manSectionHeading  "^[a-z][a-z_ \-:]*[a-z]$"
 syntax match  manSubHeading      "^\s\{3\}[a-z][a-z ]*[a-z]$"
 syntax match  manOptionDesc      "^\s*[+-][a-z0-9]\S*"
 syntax match  manLongOptionDesc  "^\s*--[a-z0-9-]\S*"
