@@ -5,7 +5,7 @@ Maintainer: Python Applications Packaging Team <python-apps-team@lists.alioth.de
 Uploaders: ChangZhuo Chen (陳昌倬) <czchen@gmail.com>
 Build-Depends: debhelper (>= 9),
                python-all (>= 2.7)
-Standards-Version: 3.9.5
+Standards-Version: 3.9.6
 Homepage: https://github.com/aitjcize/cppman/
 X-Python-Version: >= 2.7
 
