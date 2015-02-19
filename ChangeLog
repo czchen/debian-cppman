@@ -2,6 +2,24 @@
 cppman Changelog
 ------------------------------------------------------------------------------
 
+cppman 0.4.2 (January 18th, 2015):
+
+	Bug fixed:
+	* `cache-all` now respect user's selection of source
+	* fallback to less if vim is not found
+
+cppman 0.4.1 (October 12th, 2014):
+
+	Bug fixed:
+	* Minor bug fixes
+	* Fix emtpy man pages on some system (MacOS)
+	* Fix wrong output dev
+
+cppman 0.4.0 (October 10th, 2014):
+
+	Features added:
+	* Add cppreference.com backend
+
 cppman 0.3.1 (November 29th, 2013):
 
 	Bug fixed:

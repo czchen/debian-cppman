@@ -1,8 +1,8 @@
-.. image:: http://img.shields.io/travis/aitjcize/cppman.svg
+.. image:: http://img.shields.io/travis/aitjcize/cppman.svg?style=flat
    :target: https://travis-ci.org/aitjcize/cppman
-.. image:: http://img.shields.io/pypi/v/cppman.svg
+.. image:: http://img.shields.io/pypi/v/cppman.svg?style=flat
    :target: https://pypi.python.org/pypi/cppman
-.. image:: http://img.shields.io/pypi/dm/cppman.svg
+.. image:: http://img.shields.io/pypi/dm/cppman.svg?style=flat
    :target: https://crate.io/packages/cppman
 
 cppman
@@ -53,15 +53,11 @@ or install the git version
 
     $ yaourt -S cppman-git
 
-3. Ubuntu/Debian PPA
+3. Debian / Ubuntu: cppman is available in Debian sid/unstable and Ubuntu vivid.
 
 .. code-block:: bash
 
-    $ sudo add-apt-repository ppa:cppman/cppman-daily
-    $ sudo apt-get update
     $ sudo apt-get install cppman
-
-Thanks `czchen <https://github.com/czchen>`_ for maintaining the package.
 
 FAQ
 ---
