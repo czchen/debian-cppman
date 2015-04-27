@@ -1,0 +1,5 @@
+cppman/
+files
+*.debhelper
+*.log
+*.substvars
