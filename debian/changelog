@@ -1,3 +1,10 @@
+cppman (0.4.2-2) unstable; urgency=medium
+
+  * Merge to unstable
+  * Use dh-python
+
+ -- ChangZhuo Chen (陳昌倬) <czchen@gmail.com>  Mon, 27 Apr 2015 12:20:44 +0800
+
 cppman (0.4.2-1) experimental; urgency=medium
 
   * New upstream release
