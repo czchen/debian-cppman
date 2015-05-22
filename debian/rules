@@ -15,5 +15,6 @@ override_dh_fixperms:
 
 override_dh_auto_install:
 	dh_auto_install
-	# Fix extra-license-file
+	# Fix extra-license-file and changelog
 	-rm -f debian/cppman/usr/share/doc/cppman/COPYING
+	-rm -f debian/cppman/usr/share/doc/cppman/ChangeLog
