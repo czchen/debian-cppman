@@ -1,3 +1,10 @@
+cppman (0.4.2-3) unstable; urgency=medium
+
+  * Fix manpage typo (Closes: #786510)
+  * Fix duplicate changelogs (Closes: #786511)
+
+ -- ChangZhuo Chen (陳昌倬) <czchen@gmail.com>  Fri, 22 May 2015 22:25:44 +0800
+
 cppman (0.4.2-2) unstable; urgency=medium
 
   * Merge to unstable
