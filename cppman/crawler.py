@@ -2,7 +2,7 @@
 #
 # crawler.py
 #
-# Copyright (C) 2010 - 2014  Wei-Ning Huang (AZ) <aitjcize@gmail.com>
+# Copyright (C) 2010 - 2015  Wei-Ning Huang (AZ) <aitjcize@gmail.com>
 # All Rights reserved.
 #
 # This file is part of cppman.
@@ -22,13 +22,15 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-import httplib
+
+
+import http.client
 import os
 import re
 import sys
 
 from threading import Thread, Lock
-from urllib import quote
+from urllib.parse import quote
 
 
 class Document(object):
@@ -41,7 +43,7 @@ class Document(object):
 
 
 class Crawler(object):
-    F_ANY, F_SAME_DOMAIN, F_SAME_HOST, F_SAME_PATH = range(4)
+    F_ANY, F_SAME_DOMAIN, F_SAME_HOST, F_SAME_PATH = list(range(4))
 
     def __init__(self):
         self.host = None
@@ -82,7 +84,7 @@ class Crawler(object):
         self.include_hashtag = include
 
     def process_document(self, doc):
-        print 'GET', doc.status, doc.url
+        print('GET', doc.status, doc.url)
         # to do stuff with url depth use self._calc_depth(doc.url)
 
     def crawl(self, url, path=None):
@@ -207,7 +209,7 @@ class Crawler(object):
                 host = rx.group(1)
                 path = rx.group(2)
 
-                conn = httplib.HTTPConnection(host, timeout=10)
+                conn = http.client.HTTPConnection(host, timeout=10)
                 conn.request('GET', path)
                 res = conn.getresponse()
 
@@ -242,8 +244,8 @@ class Crawler(object):
             except KeyError:
                 # Pop from an empty set
                 break
-            except (httplib.HTTPException, EnvironmentError):
-                # print '%s, retrying' % str(e)
+            except (http.client.HTTPException, EnvironmentError):
+                # print('%s, retrying' % str(e))
                 self.targets_lock.acquire()
                 self.targets.add(url)
                 self.targets_lock.release()

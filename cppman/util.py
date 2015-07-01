@@ -2,7 +2,7 @@
 #
 # util.py - Misc utilities
 #
-# Copyright (C) 2010 - 2014  Wei-Ning Huang (AZ) <aitjcize@gmail.com>
+# Copyright (C) 2010 - 2015  Wei-Ning Huang (AZ) <aitjcize@gmail.com>
 # All Rights reserved.
 #
 # This file is part of cppman.
@@ -29,6 +29,8 @@ import termios
 import subprocess
 
 from cppman import environ
+
+import bs4
 
 
 def update_mandb_path():
@@ -71,7 +73,7 @@ def update_man3_link():
             else:
                 os.unlink(man3_path)
         else:
-            raise RuntimeError("Can't create link since `%s' already exists",
+            raise RuntimeError("Can't create link since `%s' already exists" %
                                man3_path)
 
     os.symlink(environ.config.Source, man3_path)
@@ -106,3 +108,7 @@ def html2man(data, formatter):
     groff_text = formatter(data)
     man_text = groff2man(groff_text)
     return man_text
+
+
+def fixupHTML(data):
+    return str(bs4.BeautifulSoup(data))

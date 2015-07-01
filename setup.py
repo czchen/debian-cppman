@@ -18,7 +18,7 @@ _data_files = [
 
 setup(
         name = 'cppman',
-        version = '0.4.2',
+        version = '0.4.5',
         description = 'C++ 98/11/14 manual pages for Linux/MacOS',
         author = 'Wei-Ning Huang (AZ)',
         author_email = 'aitjcize@gmail.com',
@@ -27,5 +27,12 @@ setup(
         packages = ['cppman', 'cppman.formatter'],
         package_data = {'cppman': _package_data},
         data_files = _data_files,
-        scripts = ['bin/cppman']
+        scripts = ['bin/cppman'],
+        install_requires=['beautifulsoup4'],
+        classifiers = [
+            'Programming Language :: Python :: 3.3',
+            'Programming Language :: Python :: 3.4',
+            'Programming Language :: Python :: 3 :: Only',
+            'Topic :: Software Development :: Documentation',
+        ],
 )

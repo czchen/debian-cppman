@@ -2,7 +2,7 @@
 #
 # tableparser.py - format html from cplusplus.com to groff syntax
 #
-# Copyright (C) 2010 - 2014  Wei-Ning Huang (AZ) <aitjcize@gmail.com>
+# Copyright (C) 2010 - 2015  Wei-Ning Huang (AZ) <aitjcize@gmail.com>
 # All Rights reserved.
 #
 # This file is part of cppman.
@@ -22,8 +22,10 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
+
+
 import re
-import StringIO
+import io
 
 
 NODE = re.compile(r'<\s*([^/]\w*)\s?(.*?)>(.*?)<\s*/\1.*?>', re.S)
@@ -53,7 +55,7 @@ class Node(object):
         return NODE.sub(self.strip_tags, html)
 
     def traverse(self, depth=0):
-        print '%s%s: %s' % (' ' * depth, self.name, self.text)
+        print('%s%s: %s' % (' ' * depth, self.name, self.text))
 
         for c in self.children:
             c.traverse(depth + 2)
@@ -154,6 +156,6 @@ class Node(object):
 
 def parse_table(html):
     root = Node(None, 'root', '', html)
-    fd = StringIO.StringIO()
+    fd = io.StringIO()
     root.gen(fd)
     return fd.getvalue()
