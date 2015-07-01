@@ -16,6 +16,7 @@ Package: cppman
 Architecture: all
 Depends: ${misc:Depends},
          ${python3:Depends},
+         python3-bs4,
          bsdmainutils,
          groff-base,
 Recommends:
