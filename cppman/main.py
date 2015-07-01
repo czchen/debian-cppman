@@ -2,7 +2,7 @@
 #
 # main.py
 #
-# Copyright (C) 2010 - 2014  Wei-Ning Huang (AZ) <aitjcize@gmail.com>
+# Copyright (C) 2010 - 2015  Wei-Ning Huang (AZ) <aitjcize@gmail.com>
 # All Rights reserved.
 #
 # This file is part of cppman.
@@ -22,6 +22,8 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
+
+
 import gzip
 import importlib
 import os
@@ -30,7 +32,7 @@ import shutil
 import sqlite3
 import subprocess
 import sys
-import urllib
+import urllib.request
 
 from cppman import environ
 from cppman import util
@@ -125,11 +127,11 @@ class Cppman(Crawler):
     def process_document(self, doc):
         """callback to insert index"""
         if doc.url not in self.blacklist:
-            print "Indexing '%s' ..." % doc.url
+            print("Indexing '%s' ..." % doc.url)
             name = self.extract_name(doc.text)
             self.results.add((name, doc.url))
         else:
-            print "Skipping blacklisted page '%s' ..." % doc.url
+            print("Skipping blacklisted page '%s' ..." % doc.url)
             return None
 
     def insert_index(self, table, name, url):
@@ -150,13 +152,13 @@ class Cppman(Crawler):
 
     def cache_all(self):
         """Cache all available man pages"""
-        print 'By default, cppman fetch pages on-the-fly if corresponding '\
-            'page is not found in the cache. The "cache-all" option is only '\
-            'useful if you want to view man pages offline. ' \
-            'Caching all contents will take several minutes, ' \
-            'do you want to continue [y/N]?',
+        print('By default, cppman fetches pages on-the-fly if corresponding '
+              'page is not found in the cache. The "cache-all" option is only '
+              'useful if you want to view man pages offline. '
+              'Caching all contents will take several minutes, '
+              'do you want to continue [y/N]?')
 
-        respond = raw_input()
+        respond = input()
         if respond.lower() not in ['y', 'ye', 'yes']:
             raise KeyboardInterrupt
 
@@ -175,51 +177,53 @@ class Cppman(Crawler):
         cursor = conn.cursor()
 
         source = environ.config.source
-        print 'Caching mange pages from %s ...' % source
+        print('Caching manpages from %s ...' % source)
         data = cursor.execute('SELECT * FROM "%s"' % source).fetchall()
 
         for name, url in data:
             retries = 3
-            print 'Caching %s ...' % name
+            print('Caching %s ...' % name)
             while retries > 0:
                 try:
                     self.cache_man_page(source, url, name)
                 except Exception:
-                    print 'Retrying ...'
+                    print('Retrying ...')
                     retries -= 1
                 else:
                     break
 
             if retries == 0:
-                print 'Error caching %s ...' % name
+                print('Error caching %s ...' % name)
                 self.failure_count += 1
             else:
                 self.success_count += 1
         conn.close()
 
-        print '\n%d manual pages cached successfully.' % self.success_count
-        print '%d manual pages failed to cache.' % self.failure_count
+        print('\n%d manual pages cached successfully.' % self.success_count)
+        print('%d manual pages failed to cache.' % self.failure_count)
         self.update_mandb(False)
 
     def cache_man_page(self, source, url, name):
         """callback to cache new man page"""
+        # Skip if already exists, override if forced flag is true
+        outname = self.get_page_path(source, name)
+        if os.path.exists(outname) and not self.forced:
+            return
+
         try:
             os.makedirs(os.path.join(environ.man_dir, source))
         except OSError:
             pass
 
-        data = urllib.urlopen(url).read()
-        formatter = importlib.import_module('.' + source[:-4],
-                                            'cppman.formatter')
+        # There are often some errors in the HTML, for example: missing closing
+        # tag. We use fixupHTML to fix this.
+        data = util.fixupHTML(urllib.request.urlopen(url).read())
+
+        formatter = importlib.import_module('cppman.formatter.%s' % source[:-4])
         groff_text = formatter.html2groff(data, name)
 
-        # Skip if already exists, override if forced flag is true
-        outname = self.get_page_path(source, name)
-        if os.path.exists(outname) and not self.forced:
-            return
-        f = gzip.open(outname, 'w')
-        f.write(groff_text)
-        f.close()
+        with gzip.open(outname, 'w') as f:
+            f.write(groff_text.encode('utf-8'))
 
     def clear_cache(self):
         """Clear all cache in man3"""
@@ -263,7 +267,7 @@ class Cppman(Crawler):
             conn.close()
 
         page_name = page_name.replace('/', '_')
-        if page_name + '.3.gz' not in avail or self.forced:
+        if self.forced or page_name + '.3.gz' not in avail:
             self.cache_man_page(environ.source, url, page_name)
 
         pager = environ.pager if sys.stdout.isatty() else environ.renderer
@@ -295,9 +299,9 @@ class Cppman(Crawler):
         if selected:
             for name, url in selected:
                 if os.isatty(sys.stdout.fileno()):
-                    print pat.sub(r'\033[1;31m\1\033[0m', name)
+                    print(pat.sub(r'\033[1;31m\1\033[0m', name))
                 else:
-                    print name
+                    print(name)
         else:
             raise RuntimeError('%s: nothing appropriate.' % pattern)
 
@@ -305,7 +309,7 @@ class Cppman(Crawler):
         """Update mandb."""
         if not environ.config.UpdateManPath:
             return
-        print '\nrunning mandb...'
+        print('\nrunning mandb...')
         cmd = 'mandb %s' % (' -q' if quiet else '')
         subprocess.Popen(cmd, shell=True).wait()
 

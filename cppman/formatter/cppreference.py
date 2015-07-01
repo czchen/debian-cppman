@@ -2,7 +2,7 @@
 #
 # formatter.py - format html from cplusplus.com to groff syntax
 #
-# Copyright (C) 2010 - 2014  Wei-Ning Huang (AZ) <aitjcize@gmail.com>
+# Copyright (C) 2010 - 2015  Wei-Ning Huang (AZ) <aitjcize@gmail.com>
 # All Rights reserved.
 #
 # This file is part of cppman.
@@ -25,11 +25,11 @@
 import datetime
 import re
 import string
-import urllib
+import urllib.request
 
 from functools import partial
 
-from cppman.util import html2man
+from cppman.util import html2man, fixupHTML
 from cppman.formatter.tableparser import parse_table
 
 
@@ -55,7 +55,7 @@ def member_type_function(g):
     return '\n.IP "%s"\n%s\n' % (head + tail, g.group(2))
 
 
-NAV_BAR_END = '<div class="t-navbar-sep">&#160;</div></div>'
+NAV_BAR_END = '<div class="t-navbar-sep">.?</div></div>'
 
 # Format replacement RE list
 # The '.SE' pseudo macro is described in the function: html2groff
@@ -95,7 +95,7 @@ rps = [
     (r'&#91;edit&#93;', r'', re.S),
     (r'<div id="siteSub">.*?</div>', r'', 0),
     (r'<div id="contentSub">.*?</div>', r'', 0),
-    (r'<table id="toc"[^>]*>.*?</table>', r'', re.S),
+    (r'<table class="toc" id="toc"[^>]*>.*?</table>', r'', re.S),
     (r'<h2[^>]*>.*?</h2>', r'', re.S),
     (r'<div class="coliru-btn coliru-btn-run-init">.*?</div>', r'', re.S),
     (r'<tr class="t-dsc-hitem">.*?</tr>', r'', re.S),
@@ -132,7 +132,7 @@ rps = [
     # Footer
     (r'<div class="printfooter">',
      r'\n.SE\n.IEND\n.SH "REFERENCE"\n'
-     r'cppreference.com, 2014 - All rights reserved.', re.S),
+     r'cppreference.com, 2015 - All rights reserved.', re.S),
     # C++ version tag
     (r'<div title="(C\+\+..)"[^>]*>', r'.sp\n\1\n', 0),
     # Output
@@ -155,7 +155,7 @@ rps = [
     # Escape
     (r'^#', r'\#', 0),
     (r'&#160;', ' ', 0),
-    (r'&#(\d+);', lambda g: unichr(int(g.group(1))), 0),
+    (r'&#(\d+);', lambda g: chr(int(g.group(1))), 0),
     # Misc
     (r'&lt;', r'<', 0),
     (r'&gt;', r'>', 0),
@@ -195,7 +195,7 @@ def html2groff(data, name):
         pass
 
     # Remove non prinatable characters
-    data = filter(lambda x: x in string.printable, data)
+    data = ''.join([x for x in data if x in string.printable])
 
     for table in re.findall(
             r'<table class="(?:wikitable|dsctable)"[^>]*>.*?</table>',
@@ -210,7 +210,7 @@ def html2groff(data, name):
         data = re.compile(rp[0], rp[2]).sub(rp[1], data)
 
     # Remove non prinatable characters
-    data = filter(lambda x: x in string.printable, data)
+    data = ''.join([x for x in data if x in string.printable])
 
     # Upper case all section headers
     for st in re.findall(r'.SH .*\n', data):
@@ -253,10 +253,10 @@ def html2groff(data, name):
 
         for sec, content in secs:
             # Member functions
-            if 'MEMBER' in sec and \
-               'NON-MEMBER' not in sec and \
-               'INHERITED' not in sec and \
-               sec != 'MEMBER TYPES':
+            if ('MEMBER' in sec and
+                'NON-MEMBER' not in sec and
+                'INHERITED' not in sec and
+                 sec != 'MEMBER TYPES'):
                 content2 = re.sub(r'\n\.IP "([^:]+?)"',
                                   partial(add_header_multi, class_name),
                                   content)
@@ -308,8 +308,8 @@ def html2groff(data, name):
 
 def func_test():
     """Test if there is major format changes in cplusplus.com"""
-    ifs = urllib.urlopen('http://en.cppreference.com/w/cpp/container/vector')
-    result = html2groff(ifs.read(), 'std::vector')
+    ifs = urllib.request.urlopen('http://en.cppreference.com/w/cpp/container/vector')
+    result = html2groff(fixupHTML(ifs.read()), 'std::vector')
     assert '.SH "NAME"' in result
     assert '.SH "SYNOPSIS"' in result
     assert '.SH "DESCRIPTION"' in result
@@ -317,11 +317,12 @@ def func_test():
 
 def test():
     """Simple Text"""
-    ifs = urllib.urlopen('http://en.cppreference.com/w/cpp/container/vector')
-    print html2man(ifs.read()),
-    #with open('test3.html') as ifs:
-    #    print html2groff(ifs.read(), 'std::vector'),
-    #    print groff2man(html2groff(ifs.read(), 'std::vector')),
+    import bs4
+    ifs = urllib.request.urlopen('http://en.cppreference.com/w/cpp/container/vector')
+    print(html2groff(fixupHTML(ifs.read()), 'std::vector'), end=' ')
+    #with open('test.html') as ifs:
+    #    data = fixupHTML(ifs.read())
+    #    print html2groff(data, 'std::vector'),
 
 if __name__ == '__main__':
     test()

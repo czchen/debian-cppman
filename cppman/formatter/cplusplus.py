@@ -2,7 +2,7 @@
 #
 # formatter.py - format html from cplusplus.com to groff syntax
 #
-# Copyright (C) 2010 - 2014  Wei-Ning Huang (AZ) <aitjcize@gmail.com>
+# Copyright (C) 2010 - 2015  Wei-Ning Huang (AZ) <aitjcize@gmail.com>
 # All Rights reserved.
 #
 # This file is part of cppman.
@@ -24,9 +24,9 @@
 
 import datetime
 import re
-import urllib
+import urllib.request
 
-from cppman.util import html2man
+from cppman.util import html2man, fixupHTML
 from cppman.formatter.tableparser import parse_table
 
 
@@ -108,7 +108,7 @@ rps = [
     # Footer
     (r'<div id="CH_bb">.*$',
      r'\n.SE\n.SH "REFERENCE"\n'
-     r'cplusplus.com, 2000-2014 - All rights reserved.', re.S),
+     r'cplusplus.com, 2000-2015 - All rights reserved.', re.S),
     # C++ version tag
     (r'<div title="(C\+\+..)"[^>]*>', r'.sp\n\1\n', 0),
     # 'br' tag
@@ -131,8 +131,8 @@ rps = [
     (r'&nbsp;', r' ', 0),
     (r'\\([^\^nE])', r'\\\\\1', 0),
     #: vector::data SYNOPSIS section has \x0d separting two lines
-    (u'\x0d([^)])', r'\n.br\n\1', 0),
-    (u'\x0d', r'', 0),
+    ('\x0d([^)])', r'\n.br\n\1', 0),
+    ('\x0d', r'', 0),
     (r'>/">', r'', 0),
     (r'/">', r'', 0),
     # Remove empty lines
@@ -189,8 +189,10 @@ def html2groff(data, name):
 
         for sec, content in secs:
             # Member functions
-            if 'MEMBER' in sec and 'INHERITED' not in sec and\
-               sec != 'MEMBER TYPES':
+            if ('MEMBER' in sec and
+                'NON-MEMBER' not in sec and
+                'INHERITED' not in sec and
+                sec != 'MEMBER TYPES'):
                 content2 = re.sub(r'\n\.IP "([^:]+?)"', r'\n.IP "%s::\1"'
                                   % class_name, content)
                 # Replace (constructor) (destructor)
@@ -215,8 +217,8 @@ def html2groff(data, name):
 
 def func_test():
     """Test if there is major format changes in cplusplus.com"""
-    ifs = urllib.urlopen('http://www.cplusplus.com/printf')
-    result = html2groff(ifs.read(), 'printf')
+    ifs = urllib.request.urlopen('http://www.cplusplus.com/printf')
+    result = html2groff(fixupHTML(ifs.read()), 'printf')
     assert '.SH "NAME"' in result
     assert '.SH "TYPE"' in result
     assert '.SH "DESCRIPTION"' in result
@@ -224,11 +226,10 @@ def func_test():
 
 def test():
     """Simple Text"""
-    name = raw_input('What manual page do you want? ')
-    ifs = urllib.urlopen('http://www.cplusplus.com/' + name)
-    print html2man(ifs.read()),
-    # with open('test.txt') as ifs:
-    #    print html2groff(ifs.read()),
+    ifs = urllib.request.urlopen('http://www.cplusplus.com/vector')
+    print(html2groff(fixupHTML(ifs.read()), 'std::vector'), end=' ')
+    # with open('test.html') as ifs:
+    #    print html2groff(fixupHTML(ifs.read()), 'std::vector'),
 
 if __name__ == '__main__':
     test()
