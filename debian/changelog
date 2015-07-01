@@ -1,3 +1,11 @@
+cppman (0.4.5-1) unstable; urgency=medium
+
+  * New upstream release
+  * Change to Python 3 as upstream now using Python 3.
+  * Remove upstream already applied patch.
+
+ -- ChangZhuo Chen (陳昌倬) <czchen@gmail.com>  Wed, 01 Jul 2015 18:48:45 +0800
+
 cppman (0.4.2-3) unstable; urgency=medium
 
   * Fix manpage typo (Closes: #786510)
